@@ -1,0 +1,30 @@
+# Binary and Build Artifacts
+bin/
+out/
+dist/
+*.exe
+*.test
+*.prof
+
+# Dependencies (if using vendor/)
+# vendor/
+
+# Git and CI/CD
+.git
+.github
+.gitignore
+.travis.yml
+
+# Docker and Config
+Dockerfile
+.dockerignore
+docker-compose.yml
+.env
+*.md
+
+# Editor/OS Specific
+.vscode/
+.idea/
+.DS_Store
+
+tmp/
