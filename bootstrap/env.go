@@ -30,15 +30,32 @@ func NewEnv() *Env {
 		configFile = ".env"
 	}
 
-	viper.SetConfigFile(configFile)
-	viper.SetConfigType("env")
+	viper.AutomaticEnv()
 
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalf("Can't find config file %s: %v", configFile, err)
+	_ = viper.BindEnv("APP_ENV")
+	_ = viper.BindEnv("SERVER_ADDRESS")
+	_ = viper.BindEnv("CONTEXT_TIMEOUT")
+	_ = viper.BindEnv("DB_HOST")
+	_ = viper.BindEnv("DB_PORT")
+	_ = viper.BindEnv("DB_USER")
+	_ = viper.BindEnv("DB_PASS")
+	_ = viper.BindEnv("DB_NAME")
+	_ = viper.BindEnv("ACCESS_TOKEN_EXPIRY_HOUR")
+	_ = viper.BindEnv("REFRESH_TOKEN_EXPIRY_HOUR")
+	_ = viper.BindEnv("ACCESS_TOKEN_SECRET")
+	_ = viper.BindEnv("REFRESH_TOKEN_SECRET")
+
+	if _, err := os.Stat(configFile); err == nil {
+		viper.SetConfigFile(configFile)
+		viper.SetConfigType("env")
+
+		err := viper.ReadInConfig()
+		if err != nil {
+			log.Fatalf("Can't read config file %s: %v", configFile, err)
+		}
 	}
 
-	err = viper.Unmarshal(&env)
+	err := viper.Unmarshal(&env)
 	if err != nil {
 		log.Fatalf("Environment can't be loaded: %v", err)
 	}
