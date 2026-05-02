@@ -16,7 +16,14 @@ dist/
 .travis.yml
 
 # Docker and Config
+# Ignore the default Dockerfile
 Dockerfile
+
+# Ignore all files that end with Dockerfile in any directory
+**/*Dockerfile*
+
+# Specifically ignore common patterns like Dockerfile.dev or Dockerfile.prod
+Dockerfile.*
 .dockerignore
 docker-compose.yml
 .env

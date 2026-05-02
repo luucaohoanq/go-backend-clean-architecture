@@ -1,0 +1,21 @@
+# Stage 1: Build
+FROM golang:1.22-alpine AS builder
+WORKDIR /app
+
+# CHỖ NÀY LÀ CHIÊU THỨC TẬN DỤNG CACHE:
+# Copy file quản lý thư viện trước
+COPY go.mod go.sum ./
+# Tải thư viện (Layer này sẽ được cache trừ khi bạn sửa go.mod)
+RUN go mod download
+
+# Sau đó mới copy toàn bộ source code
+COPY . .
+# Build binary (Layer này sẽ luôn chạy lại nếu bạn sửa bất kỳ file .go nào)
+RUN go build -o main cmd/main.go
+
+# Stage 2: Run (Sử dụng Image siêu nhẹ)
+FROM alpine:latest
+WORKDIR /root/
+COPY --from=builder /app/main .
+COPY .env .
+CMD ["./main"]
