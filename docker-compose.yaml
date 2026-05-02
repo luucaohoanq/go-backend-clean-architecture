@@ -11,6 +11,11 @@ services:
     env_file: .env
     ports:
       - "$PORT:$PORT"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`localhost`)"
+      # - "traefik.http.routers.app.rule=Host(`api.domain.com`)"
+      - "traefik.http.services.app.loadbalancer.server.port=8080"
     depends_on:
       - mongodb
 
@@ -26,6 +31,20 @@ services:
       - "$DB_PORT:$DB_PORT"
     volumes:
       - dbdata:/data/db
+
+  traefik:
+    image: traefik:v3.6.6
+    container_name: traefik
+    command:
+      - "--api.insecure=true" # dashboard
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      # - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "8081:8080" # dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   dbdata:
