@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/amitshekhariitbhu/go-backend-clean-architecture/domain"
@@ -10,10 +11,18 @@ import (
 
 type TaskController struct {
 	TaskUsecase domain.TaskUsecase
+	Logger      *slog.Logger
 }
 
 func (tc *TaskController) Create(c *gin.Context) {
 	var task domain.Task
+
+	if err := c.ShouldBind(&task); err != nil {
+		// Log kèm theo context và dữ liệu liên quan
+		tc.Logger.Error("Binding error", "error", err.Error())
+		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
+		return
+	}
 
 	err := c.ShouldBind(&task)
 	if err != nil {
@@ -41,14 +50,16 @@ func (tc *TaskController) Create(c *gin.Context) {
 	})
 }
 
-func (u *TaskController) Fetch(c *gin.Context) {
+func (tc *TaskController) Fetch(c *gin.Context) {
 	userID := c.GetString("x-user-id")
 
-	tasks, err := u.TaskUsecase.FetchByUserID(c, userID)
+	tasks, err := tc.TaskUsecase.FetchByUserID(c, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
+
+	tc.Logger.Info("Fetch tasks", "tasks", tasks)
 
 	c.JSON(http.StatusOK, tasks)
 }

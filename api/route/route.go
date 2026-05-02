@@ -1,6 +1,7 @@
 package route
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/amitshekhariitbhu/go-backend-clean-architecture/api/middleware"
@@ -9,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Setup(env *bootstrap.Env, timeout time.Duration, db mongo.Database, gin *gin.Engine) {
+func Setup(env *bootstrap.Env, timeout time.Duration, db mongo.Database, gin *gin.Engine, logger *slog.Logger) {
 	publicRouter := gin.Group("")
 	// All Public APIs
 	NewSignupRouter(env, timeout, db, publicRouter)
@@ -21,5 +22,5 @@ func Setup(env *bootstrap.Env, timeout time.Duration, db mongo.Database, gin *gi
 	protectedRouter.Use(middleware.JwtAuthMiddleware(env.AccessTokenSecret))
 	// All Private APIs
 	NewProfileRouter(env, timeout, db, protectedRouter)
-	NewTaskRouter(env, timeout, db, protectedRouter)
+	NewTaskRouter(env, timeout, db, protectedRouter, logger)
 }
