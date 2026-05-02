@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"log"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -23,16 +24,23 @@ type Env struct {
 
 func NewEnv() *Env {
 	env := Env{}
-	viper.SetConfigFile(".env")
+
+	configFile := os.Getenv("ENV_FILE")
+	if configFile == "" {
+		configFile = ".env"
+	}
+
+	viper.SetConfigFile(configFile)
+	viper.SetConfigType("env")
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatal("Can't find the file .env : ", err)
+		log.Fatalf("Can't find config file %s: %v", configFile, err)
 	}
 
 	err = viper.Unmarshal(&env)
 	if err != nil {
-		log.Fatal("Environment can't be loaded: ", err)
+		log.Fatalf("Environment can't be loaded: %v", err)
 	}
 
 	if env.AppEnv == "development" {

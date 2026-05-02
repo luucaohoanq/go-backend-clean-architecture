@@ -59,7 +59,7 @@ func (tc *TaskController) Fetch(c *gin.Context) {
 		return
 	}
 
-	tc.Logger.Info("Fetch tasks", "tasks", tasks)
+	tc.Logger.Info("Fetch tasks success", "tasks", tasks)
 
 	c.JSON(http.StatusOK, tasks)
 }
