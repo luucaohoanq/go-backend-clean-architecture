@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log/slog"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
@@ -17,6 +18,7 @@ type LoginController struct {
 
 func (lc *LoginController) Login(c *gin.Context) {
 	var request domain.LoginRequest
+	logger := c.MustGet("logger").(*slog.Logger)
 
 	err := c.ShouldBind(&request)
 	if err != nil {
@@ -51,6 +53,12 @@ func (lc *LoginController) Login(c *gin.Context) {
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}
+
+	logger.Info("Login success")
+	//logger.Info("Login success for user",
+	//	"userId", user.ID,
+	//	"email", user.Email,
+	//)
 
 	c.JSON(http.StatusOK, loginResponse)
 }

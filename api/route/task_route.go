@@ -1,7 +1,6 @@
 package route
 
 import (
-	"log/slog"
 	"time"
 
 	"github.com/amitshekhariitbhu/go-backend-clean-architecture/api/controller"
@@ -13,11 +12,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewTaskRouter(env *bootstrap.Env, timeout time.Duration, db mongo.Database, group *gin.RouterGroup, logger *slog.Logger) {
+func NewTaskRouter(env *bootstrap.Env, timeout time.Duration, db mongo.Database, group *gin.RouterGroup) {
 	tr := repository.NewTaskRepository(db, domain.CollectionTask)
 	tc := &controller.TaskController{
 		TaskUsecase: usecase.NewTaskUsecase(tr, timeout),
-		Logger:      logger,
 	}
 	group.GET("/task", tc.Fetch)
 	group.POST("/task", tc.Create)

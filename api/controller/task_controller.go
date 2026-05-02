@@ -11,15 +11,15 @@ import (
 
 type TaskController struct {
 	TaskUsecase domain.TaskUsecase
-	Logger      *slog.Logger
 }
 
 func (tc *TaskController) Create(c *gin.Context) {
 	var task domain.Task
+	logger := c.MustGet("logger").(*slog.Logger)
 
 	if err := c.ShouldBind(&task); err != nil {
 		// Log kèm theo context và dữ liệu liên quan
-		tc.Logger.Error("Binding error", "error", err.Error())
+		logger.Error("Binding error", "error", err.Error())
 		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
@@ -52,6 +52,7 @@ func (tc *TaskController) Create(c *gin.Context) {
 
 func (tc *TaskController) Fetch(c *gin.Context) {
 	userID := c.GetString("x-user-id")
+	logger := c.MustGet("logger").(*slog.Logger)
 
 	tasks, err := tc.TaskUsecase.FetchByUserID(c, userID)
 	if err != nil {
@@ -59,7 +60,7 @@ func (tc *TaskController) Fetch(c *gin.Context) {
 		return
 	}
 
-	tc.Logger.Info("Fetch tasks success", "tasks", tasks)
+	logger.Info("Fetch tasks success", "tasks", tasks)
 
 	c.JSON(http.StatusOK, tasks)
 }
