@@ -19,9 +19,16 @@ func main() {
 
 	timeout := time.Duration(env.ContextTimeout) * time.Second
 
-	gin := gin.Default()
+	ginEngine := gin.Default()
 
-	route.Setup(env, timeout, db, gin, app.Logger)
+	//if err := ginEngine.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
+	//	app.Logger.Error("failed to set trusted proxies", "err", err)
+	//}
 
-	gin.Run(env.ServerAddress)
+	route.Setup(env, timeout, db, ginEngine, app.Logger)
+
+	err := ginEngine.Run(env.ServerAddress)
+	if err != nil {
+		return
+	}
 }
