@@ -95,12 +95,10 @@ func (d *nullawareDecoder) DecodeValue(dctx bsoncodec.DecodeContext, vr bsonrw.V
 }
 
 func NewClient(connection string) (Client, error) {
-
 	time.Local = time.UTC
 	c, err := mongo.NewClient(options.Client().ApplyURI(connection))
 
 	return &mongoClient{cl: c}, err
-
 }
 
 func (mc *mongoClient) Ping(ctx context.Context) error {
@@ -144,7 +142,12 @@ func (mc *mongoCollection) FindOne(ctx context.Context, filter interface{}) Sing
 	return &mongoSingleResult{sr: singleResult}
 }
 
-func (mc *mongoCollection) UpdateOne(ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func (mc *mongoCollection) UpdateOne(
+	ctx context.Context,
+	filter interface{},
+	update interface{},
+	opts ...*options.UpdateOptions,
+) (*mongo.UpdateResult, error) {
 	return mc.coll.UpdateOne(ctx, filter, update, opts[:]...)
 }
 
@@ -173,11 +176,20 @@ func (mc *mongoCollection) Aggregate(ctx context.Context, pipeline interface{}) 
 	return &mongoCursor{mc: aggregateResult}, err
 }
 
-func (mc *mongoCollection) UpdateMany(ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func (mc *mongoCollection) UpdateMany(
+	ctx context.Context,
+	filter interface{},
+	update interface{},
+	opts ...*options.UpdateOptions,
+) (*mongo.UpdateResult, error) {
 	return mc.coll.UpdateMany(ctx, filter, update, opts[:]...)
 }
 
-func (mc *mongoCollection) CountDocuments(ctx context.Context, filter interface{}, opts ...*options.CountOptions) (int64, error) {
+func (mc *mongoCollection) CountDocuments(
+	ctx context.Context,
+	filter interface{},
+	opts ...*options.CountOptions,
+) (int64, error) {
 	return mc.coll.CountDocuments(ctx, filter, opts...)
 }
 

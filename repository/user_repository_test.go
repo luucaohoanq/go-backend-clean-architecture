@@ -14,7 +14,6 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-
 	var databaseHelper *mocks.Database
 	var collectionHelper *mocks.Collection
 
@@ -34,8 +33,9 @@ func TestCreate(t *testing.T) {
 	mockUserID := primitive.NewObjectID()
 
 	t.Run("success", func(t *testing.T) {
-
-		collectionHelper.On("InsertOne", mock.Anything, mock.AnythingOfType("*domain.User")).Return(mockUserID, nil).Once()
+		collectionHelper.On("InsertOne", mock.Anything, mock.AnythingOfType("*domain.User")).
+			Return(mockUserID, nil).
+			Once()
 
 		databaseHelper.On("Collection", collectionName).Return(collectionHelper)
 
@@ -49,7 +49,9 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("error", func(t *testing.T) {
-		collectionHelper.On("InsertOne", mock.Anything, mock.AnythingOfType("*domain.User")).Return(mockEmptyUser, errors.New("Unexpected")).Once()
+		collectionHelper.On("InsertOne", mock.Anything, mock.AnythingOfType("*domain.User")).
+			Return(mockEmptyUser, errors.New("Unexpected")).
+			Once()
 
 		databaseHelper.On("Collection", collectionName).Return(collectionHelper)
 
@@ -61,5 +63,4 @@ func TestCreate(t *testing.T) {
 
 		collectionHelper.AssertExpectations(t)
 	})
-
 }

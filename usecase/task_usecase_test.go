@@ -20,7 +20,6 @@ func TestFetchByUserID(t *testing.T) {
 	userID := userObjectID.Hex()
 
 	t.Run("success", func(t *testing.T) {
-
 		mockTask := domain.Task{
 			ID:     primitive.NewObjectID(),
 			Title:  "Test Title",
@@ -55,5 +54,4 @@ func TestFetchByUserID(t *testing.T) {
 
 		mockTaskRepository.AssertExpectations(t)
 	})
-
 }

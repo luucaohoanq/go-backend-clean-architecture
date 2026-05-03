@@ -54,13 +54,21 @@ func (sc *SignupController) Signup(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := sc.SignupUsecase.CreateAccessToken(&user, sc.Env.AccessTokenSecret, sc.Env.AccessTokenExpiryHour)
+	accessToken, err := sc.SignupUsecase.CreateAccessToken(
+		&user,
+		sc.Env.AccessTokenSecret,
+		sc.Env.AccessTokenExpiryHour,
+	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	refreshToken, err := sc.SignupUsecase.CreateRefreshToken(&user, sc.Env.RefreshTokenSecret, sc.Env.RefreshTokenExpiryHour)
+	refreshToken, err := sc.SignupUsecase.CreateRefreshToken(
+		&user,
+		sc.Env.RefreshTokenSecret,
+		sc.Env.RefreshTokenExpiryHour,
+	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return

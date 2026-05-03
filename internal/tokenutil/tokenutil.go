@@ -60,7 +60,6 @@ func ExtractIDFromToken(requestToken string, secret string) (string, error) {
 		}
 		return []byte(secret), nil
 	})
-
 	if err != nil {
 		return "", err
 	}

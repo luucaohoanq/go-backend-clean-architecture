@@ -24,7 +24,6 @@ func setUserID(userID string) gin.HandlerFunc {
 }
 
 func TestFetch(t *testing.T) {
-
 	t.Run("success", func(t *testing.T) {
 		mockProfile := &domain.Profile{
 			Name:  "Test Name",
@@ -99,5 +98,4 @@ func TestFetch(t *testing.T) {
 
 		mockProfileUsecase.AssertExpectations(t)
 	})
-
 }

@@ -20,10 +20,10 @@ func App() Application {
 	app.Mongo = NewMongoDatabase(app.Env)
 
 	// Cách 1: Dùng logger mặc định (Text format)
-	//app.Logger = slog.Default()
+	// app.Logger = slog.Default()
 
 	// Cách 2: Dùng JSON format (Cực chuẩn cho dân Java chuyển sang làm Microservices)
-	//app.Logger = slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	// app.Logger = slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	// Cách 3: Tint + Handler
 	handler := tint.NewHandler(os.Stdout, &tint.Options{

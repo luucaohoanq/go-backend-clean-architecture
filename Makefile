@@ -20,7 +20,7 @@ install-tools:
 	go install github.com/air-verse/air@latest
 	go install mvdan.cc/gofumpt@latest
 	go install github.com/segmentio/golines@latest
-	curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(go env GOPATH)/bin $(GOLANGCI_LINT_VERSION)
+# 	curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(go env GOPATH)/bin $(GOLANGCI_LINT_VERSION)
 
 
 ## dev: Chạy app với Live Reload (Dùng Air) - Khuyên dùng khi code

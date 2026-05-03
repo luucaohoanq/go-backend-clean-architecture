@@ -11,7 +11,6 @@ import (
 )
 
 func Setup(env *bootstrap.Env, timeout time.Duration, db mongo.Database, gin *gin.Engine, logger *slog.Logger) {
-
 	gin.Use(middleware.LoggingMiddleware(logger))
 
 	publicRouter := gin.Group("")
