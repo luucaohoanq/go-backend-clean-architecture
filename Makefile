@@ -51,6 +51,11 @@ fmt:
 
 ## lint: Kiểm tra lỗi code tĩnh (golangci-lint)
 lint:
+	@command -v golangci-lint >/dev/null 2>&1 || { \
+		echo "Error: golangci-lint chưa được cài đặt!"; \
+		echo "Hãy chạy lệnh: make install-tools"; \
+		exit 1; \
+	}
 	golangci-lint run
 
 ## tidy: Dọn dẹp và cập nhật go.mod (Giống Maven Update Project)
