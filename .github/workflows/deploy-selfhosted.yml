@@ -1,0 +1,80 @@
+name: Deploy (self-hosted)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-selfhosted
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, Linux, X64, debian12tinker]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Write .env
+        shell: bash
+        run: |
+          required_vars=(
+            APP_ENV
+            SERVER_ADDRESS
+            PORT
+            CONTEXT_TIMEOUT
+            DB_HOST
+            DB_PORT
+            DB_USER
+            DB_PASS
+            DB_NAME
+            ACCESS_TOKEN_EXPIRY_HOUR
+            REFRESH_TOKEN_EXPIRY_HOUR
+            ACCESS_TOKEN_SECRET
+            REFRESH_TOKEN_SECRET
+          )
+
+          for v in "${required_vars[@]}"; do
+            if [ -z "${!v}" ]; then
+              echo "Missing required secret: $v" >&2
+              exit 1
+            fi
+          done
+
+          cat > .env <<EOF
+          APP_ENV=${APP_ENV}
+          SERVER_ADDRESS=${SERVER_ADDRESS}
+          PORT=${PORT}
+          CONTEXT_TIMEOUT=${CONTEXT_TIMEOUT}
+          DB_HOST=${DB_HOST}
+          DB_PORT=${DB_PORT}
+          DB_USER=${DB_USER}
+          DB_PASS=${DB_PASS}
+          DB_NAME=${DB_NAME}
+          ACCESS_TOKEN_EXPIRY_HOUR=${ACCESS_TOKEN_EXPIRY_HOUR}
+          REFRESH_TOKEN_EXPIRY_HOUR=${REFRESH_TOKEN_EXPIRY_HOUR}
+          ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+          REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+          EOF
+        env:
+          APP_ENV: ${{ secrets.APP_ENV }}
+          SERVER_ADDRESS: ${{ secrets.SERVER_ADDRESS }}
+          PORT: ${{ secrets.PORT }}
+          CONTEXT_TIMEOUT: ${{ secrets.CONTEXT_TIMEOUT }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          ACCESS_TOKEN_EXPIRY_HOUR: ${{ secrets.ACCESS_TOKEN_EXPIRY_HOUR }}
+          REFRESH_TOKEN_EXPIRY_HOUR: ${{ secrets.REFRESH_TOKEN_EXPIRY_HOUR }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+
+      - name: Deploy with Docker Compose
+        shell: bash
+        run: |
+          docker compose -f docker-compose-deploy-prod.yaml pull
+          docker compose -f docker-compose-deploy-prod.yaml up -d --remove-orphans

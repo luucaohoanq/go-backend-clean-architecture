@@ -1,0 +1,69 @@
+services:
+  gbca-app:
+    image: hoangclw/go-backend-clean-architecture:latest
+    restart: unless-stopped
+    env_file: .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`localhost`)"
+      - "traefik.http.services.app.loadbalancer.server.port=8080"
+      # Thêm label để Traefik tự động nhận biết Health từ Docker
+      - "traefik.http.services.app.loadbalancer.healthcheck.path=/health"
+      - "traefik.http.services.app.loadbalancer.healthcheck.interval=10s"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1024M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s       # Kiểm tra mỗi 10 giây
+      timeout: 5s        # Sau 5 giây không phản hồi coi như fail
+      retries: 3         # Thử lại 3 lần trước khi đánh dấu container die
+      start_period: 5s   # Đợi 5 giây đầu tiên khi mới start (không tính fail)
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - gbca-app-network
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$DB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$DB_PASS
+    command: ["--wiredTigerCacheSizeGB", "0.25"]
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - gbca-app-network
+
+  traefik:
+    image: traefik:v3.6.6
+    container_name: traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "127.0.0.1:8081:8080" # dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - gbca-app-network
+
+volumes:
+  dbdata:
+
+networks:
+  gbca-app-network:
+    driver: bridge

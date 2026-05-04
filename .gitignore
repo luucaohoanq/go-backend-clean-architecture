@@ -3,5 +3,6 @@ bin/
 /.idea
 .idea
 .env
+.env.prod
 .vscode
 tmp/
