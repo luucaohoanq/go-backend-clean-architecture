@@ -45,7 +45,7 @@ jobs:
           done
 
           cat > .env <<EOF
-          GIN_MODE=release
+          GIN_MODE=${GIN_MODE}
           APP_ENV=${APP_ENV}
           SERVER_ADDRESS=${SERVER_ADDRESS}
           PORT=${PORT}
