@@ -152,8 +152,12 @@ func (mc *mongoCollection) UpdateOne(
 }
 
 func (mc *mongoCollection) InsertOne(ctx context.Context, document interface{}) (interface{}, error) {
-	id, err := mc.coll.InsertOne(ctx, document)
-	return id.InsertedID, err
+	res, err := mc.coll.InsertOne(ctx, document)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.InsertedID, nil
 }
 
 func (mc *mongoCollection) InsertMany(ctx context.Context, document []interface{}) ([]interface{}, error) {
