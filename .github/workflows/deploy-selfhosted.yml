@@ -61,6 +61,7 @@ jobs:
           REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
           EOF
         env:
+          GIN_MODE: ${{ secrets.GIN_MODE }}
           APP_ENV: ${{ secrets.APP_ENV }}
           SERVER_ADDRESS: ${{ secrets.SERVER_ADDRESS }}
           PORT: ${{ secrets.PORT }}
