@@ -1,8 +1,8 @@
 services:
   gbca-app:
-    image: hoangclw/go-backend-clean-architecture:latest
+    image: lcaohoanq/go-backend-clean-architecture:latest
     restart: unless-stopped
-    env_file: .env
+    env_file: .env.prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`localhost`)"
@@ -15,8 +15,8 @@ services:
         limits:
           cpus: '0.5'
           memory: 1024M
-    expose:
-      - "$PORT"
+    ports:
+      - "127.0.0.1:$PORT:$PORT"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 10s       # Kiểm tra mỗi 10 giây
