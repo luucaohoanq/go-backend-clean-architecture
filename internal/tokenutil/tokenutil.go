@@ -13,8 +13,8 @@ func CreateAccessToken(user *domain.User, secret string, expiry int) (accessToke
 	claims := &domain.JwtCustomClaims{
 		Name: user.Name,
 		ID:   user.ID.Hex(),
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: exp,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Unix(exp, 0)),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -28,8 +28,8 @@ func CreateAccessToken(user *domain.User, secret string, expiry int) (accessToke
 func CreateRefreshToken(user *domain.User, secret string, expiry int) (refreshToken string, err error) {
 	claimsRefresh := &domain.JwtCustomRefreshClaims{
 		ID: user.ID.Hex(),
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * time.Duration(expiry)).Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(expiry))),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsRefresh)
