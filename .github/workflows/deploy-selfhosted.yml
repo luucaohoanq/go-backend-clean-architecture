@@ -1,7 +1,7 @@
 name: Deploy (self-hosted)
 
 on:
-  push:
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -21,6 +21,7 @@ jobs:
         shell: bash
         run: |
           required_vars=(
+            GIN_MODE
             APP_ENV
             SERVER_ADDRESS
             PORT
@@ -44,6 +45,7 @@ jobs:
           done
 
           cat > .env <<EOF
+          GIN_MODE=release
           APP_ENV=${APP_ENV}
           SERVER_ADDRESS=${SERVER_ADDRESS}
           PORT=${PORT}
