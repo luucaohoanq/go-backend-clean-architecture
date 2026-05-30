@@ -1,0 +1,62 @@
+# Base URLs
+@api-prefix = http://localhost:8080
+@access-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiVGVzdCBOYW1lIiwiaWQiOiI2YTFiMDU4YWY5ZGQ0NjNlMTQ3ZjcyMGQiLCJleHAiOjE3ODAxNjM5ODV9.QT1SGy_bEj8-W_WeI04-kAwJwe0Y0LmUt2LJ7pS_64A
+
+###
+# 1. Login
+###
+POST {{api-prefix}}/login
+Content-Type: application/json
+
+{
+  "email": "hoangclw@gmail.com",
+  "password": "test"
+}
+
+###
+# 2. Signup
+###
+POST {{api-prefix}}/signup
+Content-Type: application/json
+
+{
+  "name": "lcaohoanq",
+  "email": "hoangclw@gmail.com",
+  "password": "test"
+}
+
+###
+# 3. Refresh Token
+###
+POST {{api-prefix}}/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMWIwNThhZjlkZDQ2M2UxNDdmNzIwZCIsImV4cCI6MTc4MDc2MTU4NX0.h3Somit-Oa7IkB6lG5MR5jWtBFtjx_wuGSJKp0V6BXY"
+}
+
+###
+# 4. Get Profile
+###
+GET {{api-prefix}}/profile
+Content-Type: application/json
+Authorization: Bearer {{access-token}}
+
+###
+# 5. Get Task
+###
+
+GET {{api-prefix}}/task
+Content-Type: application/json
+Authorization: Bearer {{access-token}}
+
+###
+# 6. Add Task
+###
+POST {{api-prefix}}/task
+Content-Type: application/json
+Authorization: Bearer {{access-token}}
+
+{
+  "title": "Test Add Task 3"
+}
