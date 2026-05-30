@@ -18,30 +18,31 @@ func (tc *TaskController) Create(c *gin.Context) {
 	logger := c.MustGet("logger").(*slog.Logger)
 
 	if err := c.ShouldBind(&task); err != nil {
-		// Log kèm theo context và dữ liệu liên quan
 		logger.Error("Binding error", "error", err.Error())
-		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
-		return
-	}
-
-	err := c.ShouldBind(&task)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, domain.ErrorResponse{
+			Message: err.Error(),
+		})
 		return
 	}
 
 	userID := c.GetString("x-user-id")
+
 	task.ID = primitive.NewObjectID()
 
+	var err error
 	task.UserID, err = primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, domain.ErrorResponse{
+			Message: err.Error(),
+		})
 		return
 	}
 
 	err = tc.TaskUsecase.Create(c, &task)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{
+			Message: err.Error(),
+		})
 		return
 	}
 
